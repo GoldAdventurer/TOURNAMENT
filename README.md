@@ -1,83 +1,113 @@
-## Build a Blog
+## Tournament Results
 
-The files create a blog that as per the directions for the Udacity's 3rd assignment'(build a portfolio site). 
+This Python module uses a PostgreSQL database to keep track of players and matches in a game tournament.
+
+The game tournament uses the Swiss system for pairing up players in each round: players are not eliminated, and each player is paired with another player with the same number of wins, or as close as possible.
+
+This Udacity project has two parts: defining the database schema (SQL table definitions), and writing the code that will use it.
+
+The number of players in a tournament is an even number. This means that no player will be left out of a round.
 
 ### Prerequisite 
 
-This assignment uses templates. Jinja2 and python2.7 were used to write the files.
+#### Use of Vitual Machines
+You need to install Vagrant and VirtualBox and then launch the Vagrant VM.
+
+#### Creating the Database
+
+Before you can run your code or create your tables, you'll need to use the `create database tournament` command in psql to create the database. Use the name tournament for your database.
+
+Then you can connect psql to your new database by typing the command psql and create your tables from the statements you've written in tournament.sql. You can do this in either of two ways:
+
+- Paste each statement in to psql.
+- Use the command `\i tournament.sql;` to import the whole file into psql at once.
 
 ### Description
 
-The blog contains a header with four links: login, signup, logout, New Post.
+#### Python Module
+The files for this project are in the tournament subdirectory of your VM’s /vagrant directory. There are three files : tournament.sql, tournament.py, and tournament_test.py.
 
-The webiste uses 15 html page used for templates, a css file in the folder css, an svg file for the logo, a yaml file, and a python file.
+The file tournament.sql contains the database schema, mostly in the form of SQL `create table`, and `create view` commands. The database accommodates multiple tournaments. In order to use the file tournament_test.py, the fiel tournament.sql contains an insert command to create a tournament named 'One' with the the index 1.
 
-The blog includes the following features:
+The template file tournament.py contains the functions used to query the database. Those functions are in turn used by tournament_test.py.
 
-- A login form  validates user input, and displays the error(s) when necessary. After a successful login, the user is directed to a welcome page.
+Finally, the file tournament_test.py was provided by Udacity and contains unit tests that test the functions written in tournament.py. You can run the tests from the command line, using the following command.
+```
+python tournament_test.py
+```
 
-- A front page that lists blog posts (accessible through the word "BLOG" in the top right corner or at the top of the content of each webpage.
+#### Database 
 
-- A form to submit new entries (via the link New Post in the header)
-Blog posts have their own page (via permalink)
+The database contains three tables.
 
-- A logout form validates user input, and displays the error(s) when necessary. After logging out, the cookie is cleared and the user is redirected to the Signup page.
+- tournaments : each entry contains an ID (serial) and a name (text). The ID is the primary key.
+- players: this table contains all the players names (text) and ID (serial). The ID is the primary key. 
+- matches: this table contains five columns.
 
-- Users are able to edit/delete their posts. They receive an error message if they disobey this rule.
+--Tournaments which references the tournaments ID (foreign key).
 
-- Users can like/unlike posts, but not their own. They receive an error message if they disobey this rule.
+--ID which identifies unequivocally the match within a tournament (serial).
 
-- Users can comment on posts. They can only edit/delete their own posts, and they should receive an error message if they disobey this rule.
+--loser which references the ID of the player who loses the games (foreign key).
 
+--winner which references the ID of the player who wins the games (foreign key). 
 
-### User Registration
-A Registration form validates user input, and displays the error(s) when necessary.
-After a successful registration, a user is directed to a welcome page with a greeting, “Welcome, [User]” where [User] is a name set in a cookie.
+--draw which could be used if there is a tie. It is a boolean which takes the value "true" if there is a tie.
 
-If a user attempts to visit the welcome page without being signed in (without having a cookie), then he is redirected to the Signup page.
+An additional check is used to ensure that the winner and the loser are different players.
 
-If a user attempts to sign up or login when already loggedin, a message will be displayed on the signup or login pages to inform the user that he is already logged in.
+The primary key is the couple (tournament ID, match ID).
 
-If a user attempts to write a new post (via the link New Post in the header) when not logged in, the user is sent to the login page.
+The references for the winner and loser columns contain the command `DELETE ON CASCADE` to ensure that if the match is deleted then the player's ID is also deleted. 
+
+There are three views which are used to determine the players' standings:
+- nb_wins to determine each player's wins,
+- nb_matches to determine each player's total number of matches,
+- wins_matches which joins the previous two views, and
+- players_standings which gathers each player's ID, name, wins and total number of matches.
 
 ### How to run the code
 
-#### Access the application the Internet
-The application is available at: 
-https://rot13-147105.appspot.com/login
+#### Create the Database
 
-#### Run the code through Google AppEngine
-The steps used to run the application are as follows.
+You need to install Vagrant and VirtualBox and then launch the Vagrant VM.
 
-1. Create a new Cloud Platform Console project or retrieve the project ID of an existing project from the Google Cloud Platform Console
-2. Install the gcloud tool, you install and then initialize the Google Cloud SDK.
-save the file in a dedicated directory
-3. From within the dedicated directory, start the local development server with the following command:
+Then you can use the following commands to create the database
 
-```sh
-dev_appserver.py .
+- Create the database
+```
+CREATE DATABASE Tournament;
 ```
 
-The local development server will be running and listening for requests on port 8080.
-
-4. Visit http://localhost:8080/ in your web browser to view the app.
-
-5. To deploy your app to App Engine, run the following command from within the root directory of your application where the app.yaml file is located:
-```sh
-gcloud app deploy
+- Connect to the database
 ```
-6. To launch the browser and view the app at http://[YOUR_PROJECT_ID].appspot.com, run the following command:
-```sh
-gcloud app browse
+\c Tournament;
 ```
-steps 1 to 6 are detailed in the Google AppEngine documentation as per the following link:
-https://cloud.google.com/appengine/docs/python/quickstart#prerequisites
+
+- Create the tables, and views
+```
+\i tournament.sql;
+```
+
+- Check that all three tables were created. This step is optional.
+```
+\d;
+```
+
+You can view the details of each table by using the command /d following by the table name. For example, you should type \d players; to check the table players.
+
+#### Run the code
+
+Use the following command to test the database and the python functions written in the file tournament.py
+```
+python tournament_test.py
+```
 
 **Author**
 
-Christine D. selected wrote the code for the html, css, and html pages.
+Christine D. selected wrote the code for the functions in tournament.py.
 
 **License**
 
-The files are private domain works. The logo was provided by Pixabay (pixabay.com).
+The files are private domain works.
 
