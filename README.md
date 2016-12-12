@@ -98,14 +98,14 @@ You can view the details of each table by using the command /d following by the 
 
 #### Run the code
 
-Use the following command to test the database and the python functions written in the file tournament.py
+You can use the following command to test the database and the python functions written in the file tournament.py
 ```
 python tournament_test.py
 ```
 
 **Author**
 
-Christine D. selected wrote the code for the functions in tournament.py.
+C. D. wrote the code for the functions in tournament.py.
 
 **License**
 
