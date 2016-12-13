@@ -23,7 +23,7 @@ CREATE TABLE players (
 
 -- The table TOURNAMENTS can be used to create many tournaments at the same time
 -- In order to use the file tournament_test.py, the table is initialized by adding
---  the following index and name: 1, "one".
+-- the following index and name: 1, "one".
 -- I also added a function deleteTournaments() in tournament.py to delete the table 
 
 CREATE TABLE tournaments (
