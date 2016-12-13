@@ -7,6 +7,15 @@
 -- You can write comments in this file by starting them with two dashes, like
 -- these lines here.
 
+
+-- INITIALIZATION OF AND CONNECTION TO DATABASE
+
+DROP DATABASE IF EXISTS tournament;
+CREATE DATABASE tournament;
+\c tournament
+
+
+-- THE TABLE PLAYERS CONTAINS ALL PLAYERS NAME AND IDs
 CREATE TABLE players (
     ID serial PRIMARY KEY,
     name text);
@@ -22,11 +31,15 @@ CREATE TABLE tournaments (
 	name text);
 
 
+-- THE TABLE MATCHES CONTAINS THE TOURNAMENT NUMBER, THE MATCH ID, \
+-- AND THE RESULT OF THE MATCH (EITHER ONE WINS AND ONE LOSES OR \
+-- THERE IS A TIE (CAPTURED BY VARIABLE draw).
+
 CREATE TABLE matches (
-	tournament serial,
+	tournament integer,
 	ID serial,
-	loser serial,
-	winner serial,
+	loser integer,
+	winner integer,
 	draw boolean,
 	CHECK (winner != loser),
 	FOREIGN KEY (tournament) REFERENCES tournaments(ID),
@@ -37,7 +50,7 @@ CREATE TABLE matches (
 
 -- INITIALIZATION OF THE TOURNAMENTS TABLES FOR THIS EXERCISE
 
-INSERT INTO TOURNAMENTS(ID, name) VALUES(1, "One")
+INSERT INTO TOURNAMENTS(ID, name) VALUES(1, 'One');
 
 
 -- VIEW TO DETERMINE WINS
