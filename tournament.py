@@ -88,7 +88,7 @@ def playerStandings():
         ORDER by wins, matches, name, ID;"
     cursor.execute(query)
     result = [(row[0], row[1], row[2], row[3]) for row in cursor.fetchall()]
-    c.close()
+    db.close()
     return result
        
 
